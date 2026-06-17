@@ -32,8 +32,8 @@ test_that("extract_consultations_erprsf_works ", {
 
   DBI::dbWriteTable(conn, "ER_PRS_F", fake_erprsf, overwrite = TRUE)
 
-  start_date <- as.Date("01/01/2019", format = "%d/%m/%Y")
-  end_date <- as.Date("31/12/2019", format = "%d/%m/%Y")
+  start_date <- as.Date("2019-01-01")
+  end_date <- as.Date("2019-12-31")
   pse_spe_filter <- c("01", "22", "32", "34")
   prestation_filter <- c("C", "CS")
 

@@ -94,8 +94,8 @@ DBI::dbWriteTable(conn, "ER_UCD_F", fake_er_ucd_f, overwrite = TRUE)
 DBI::dbWriteTable(conn, "ER_ETE_F", fake_er_ete_f, overwrite = TRUE)
 
 test_that("extract_drugs_erucdf respects UCD filter", {
-  start_date <- as.Date("01/01/2019", format = "%d/%m/%Y")
-  end_date <- as.Date("01/04/2019", format = "%d/%m/%Y")
+  start_date <- as.Date("2019-01-01")
+  end_date <- as.Date("2019-04-01")
 
   # Test with specific UCD filter (only J05 codes)
   result_with_filter <- extract_drugs_erucdf(

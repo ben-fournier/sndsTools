@@ -69,8 +69,8 @@ test_that("extract_stays_mcob works", {
   )
 
   hospital_stays <- extract_stays_mcob(
-    start_date = as.Date("01/01/2019", format = "%d/%m/%Y"),
-    end_date = as.Date("31/12/2019", format = "%d/%m/%Y"),
+    start_date = as.Date("2019-01-01"),
+    end_date = as.Date("2019-12-31"),
     dp_cim10_codes_filter = c("A", "B"),
     patients_ids_filter = patients_ids_filter,
     conn = conn
@@ -127,8 +127,8 @@ test_that("extract_stays_mcob works without any filters", {
   )
 
   hospital_stays <- extract_stays_mcob(
-    start_date = as.Date("01/01/2019", format = "%d/%m/%Y"),
-    end_date = as.Date("31/12/2019", format = "%d/%m/%Y"),
+    start_date = as.Date("2019-01-01"),
+    end_date = as.Date("2019-12-31"),
     dp_cim10_codes_filter = NULL,
     patients_ids_filter = patients_ids_filter,
     conn = conn

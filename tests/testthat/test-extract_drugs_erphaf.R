@@ -92,8 +92,8 @@ DBI::dbWriteTable(conn, "ER_PRS_F", fake_erprsf, overwrite = TRUE)
 DBI::dbWriteTable(conn, "ER_ETE_F", fake_eretef, overwrite = TRUE)
 
 test_that("extract_drugs_erphaf works for ATC", {
-  start_date <- as.Date("01/01/2019", format = "%d/%m/%Y")
-  end_date <- as.Date("31/12/2019", format = "%d/%m/%Y")
+  start_date <- as.Date("2019-01-01")
+  end_date <- as.Date("2019-12-31")
 
   drug_dispenses <- extract_drugs_erphaf(
     start_date = start_date,
@@ -121,8 +121,8 @@ test_that("extract_drugs_erphaf works for ATC", {
 })
 
 test_that("extract_drugs_erphaf works for CIP13", {
-  start_date <- as.Date("01/01/2019", format = "%d/%m/%Y")
-  end_date <- as.Date("31/12/2019", format = "%d/%m/%Y")
+  start_date <- as.Date("2019-01-01")
+  end_date <- as.Date("2019-12-31")
 
   drug_dispenses <- extract_drugs_erphaf(
     start_date = start_date,

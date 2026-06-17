@@ -34,8 +34,8 @@ test_that("extract_longtermdiseases_irimbr works", {
   )
   DBI::dbWriteTable(conn, "IR_IMB_R", fake_ald, overwrite = TRUE)
 
-  start_date <- as.Date("01/01/2019", format = "%d/%m/%Y")
-  end_date <- as.Date("31/12/2019", format = "%d/%m/%Y")
+  start_date <- as.Date("2019-01-01")
+  end_date <- as.Date("2019-12-31")
 
   ald <- extract_longtermdiseases_irimbr(
     start_date = start_date,
