@@ -15,8 +15,8 @@ selected_ben <- selected_ben %>%
   mutate(first_series_date = as.Date(first_series_date)) %>%
   distinct()
 
-retrieval_start_date <- as.Date("01/01/2009", format = "%d/%m/%Y")
-retrieval_end_date <- as.Date("31/12/2013", format = "%d/%m/%Y")
+retrieval_start_date <- as.Date("2009-01-01")
+retrieval_end_date <- as.Date("2013-12-31")
 
 diabetes_codes <- c("E10", "E11", "E12", "E13", "E14")
 diabetes_complication_codes <- c(

@@ -15,8 +15,8 @@ selected_ben <- selected_ben %>%
   mutate(first_series_date = as.Date(first_series_date)) %>%
   distinct()
 
-retrieval_start_date <- as.Date("01/01/2009", format = "%d/%m/%Y")
-retrieval_end_date <- as.Date("31/12/2013", format = "%d/%m/%Y")
+retrieval_start_date <- as.Date("2009-01-01")
+retrieval_end_date <- as.Date("2013-12-31")
 
 antihypertensive_codes <- c(
   "C02AB02",

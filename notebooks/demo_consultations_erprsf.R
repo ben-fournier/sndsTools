@@ -14,8 +14,8 @@ if (!is_package) {
 
 # Retrieve all consultations for general practitioners (01, 22, 23) for the
 # first week of December 2022
-start_date <- as.Date("01/12/2022", format = "%d/%m/%Y")
-end_date <- as.Date("08/12/2022", format = "%d/%m/%Y")
+start_date <- as.Date("2022-12-01")
+end_date <- as.Date("2022-12-08")
 
 pse_spe_filter <- c(1, 22, 32)
 prestation_filter <- c(1111, 1112)
@@ -56,8 +56,8 @@ head(consultations_med_g_sample_patients)
 # the output will be stored in a table with the
 # given name. This is especially useful when the
 # output table is too large to be stored in memory.
-start_date <- as.Date("01/12/2022", format = "%d/%m/%Y")
-end_date <- as.Date("08/12/2022", format = "%d/%m/%Y")
+start_date <- as.Date("2022-12-01")
+end_date <- as.Date("2022-12-08")
 
 pse_spe_filter <- c(1, 22, 32)
 prestation_filter <- c(1111, 1112)

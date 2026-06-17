@@ -1,5 +1,5 @@
-start_date <- as.Date("01/01/2009", format = "%d/%m/%Y")
-end_date <- as.Date("31/12/2013", format = "%d/%m/%Y")
+start_date <- as.Date("2009-01-01")
+end_date <- as.Date("2013-12-31")
 
 dp_cim10_codes_starts_with <- c("C")
 or_dr_with_same_codes <- FALSE

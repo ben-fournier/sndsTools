@@ -29,8 +29,8 @@ cancer_codes <- c(
   "D09"
 )
 
-retrieval_start_date <- as.Date("01/01/2009", format = "%d/%m/%Y")
-retrieval_end_date <- as.Date("31/12/2013", format = "%d/%m/%Y")
+retrieval_start_date <- as.Date("2009-01-01")
+retrieval_end_date <- as.Date("2013-12-31")
 
 
 start_date <- retrieval_start_date
