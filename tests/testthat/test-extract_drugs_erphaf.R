@@ -99,7 +99,7 @@ test_that("extract_drugs_erphaf works for ATC", {
     start_date = start_date,
     end_date = end_date,
     atc_cod_starts_with_filter = c("J05"),
-    patients_ids = fake_patients_ids,
+    patients_ids_filter = fake_patients_ids,
     conn = conn
   )
 
@@ -129,7 +129,7 @@ test_that("extract_drugs_erphaf works for CIP13", {
     end_date = end_date,
     atc_cod_starts_with_filter = c("J05"),
     cip13_cod_filter = c("3400932725847"),
-    patients_ids = fake_patients_ids,
+    patients_ids_filter = fake_patients_ids,
     conn = conn
   )
 
