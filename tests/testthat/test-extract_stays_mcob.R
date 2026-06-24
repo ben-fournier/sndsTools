@@ -56,14 +56,16 @@ create_mock_hospital_stays <- function(conn) {
   DBI::dbWriteTable(conn, "T_MCO19UM", fake_um_table, overwrite = TRUE)
 }
 
+
 test_that("extract_stays_mcob works", {
   conn <- connect_synthetic_snds()
   on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
 
   create_mock_hospital_stays(conn)
+
   # parameters
   dp_cim10_codes_filter <- c("A", "B")
-  patients_ids_filter <- data.frame(
+  fake_patients_ids <- data.frame(
     BEN_IDT_ANO = c(1, 2, 3),
     BEN_NIR_PSA = c("12345", "23456", "34567")
   )
@@ -72,56 +74,39 @@ test_that("extract_stays_mcob works", {
     start_date = as.Date("2019-01-01"),
     end_date = as.Date("2019-12-31"),
     dp_cim10_codes_filter = c("A", "B"),
-    patients_ids_filter = patients_ids_filter,
+    patients_ids_filter = fake_patients_ids,
     conn = conn
-  ) |>
-    dplyr::arrange(BEN_IDT_ANO, EXE_SOI_DTD, DGN_PAL, DGN_PAL_UM, ASS_DGN)
-
-  expect_equal(
-    hospital_stays |>
-      dplyr::select(
-        ETA_NUM,
-        RSA_NUM,
-        BEN_IDT_ANO,
-        EXE_SOI_DTD,
-        DGN_PAL,
-        DGN_REL,
-        DGN_PAL_UM,
-        DGN_REL_UM,
-        ASS_DGN
-      ),
-    structure(
-      list(
-        ETA_NUM = c(1, 1, 1, 2, 2),
-        RSA_NUM = c(1, 1, 1, 2, 2),
-        BEN_IDT_ANO = c(1, 1, 1, 2, 2),
-        EXE_SOI_DTD = as.Date(
-          c(
-            "2019-01-10",
-            "2019-01-10",
-            "2019-01-10",
-            "2019-01-02",
-            "2019-01-02"
-          )
-        ),
-        DGN_PAL = c("A00", "A00", "A00", "B00", "B00"),
-        DGN_REL = c("A01", "A01", "A01", "B01", "B01"),
-        DGN_PAL_UM = c("A00", "A01", NA, "B00", NA),
-        DGN_REL_UM = c("Z00", "Z01", NA, "B01", NA),
-        ASS_DGN = c(NA, NA, "E00", NA, "E00")
-      ),
-      class = c("tbl_df", "tbl", "data.frame"),
-      row.names = c(NA, -5L)
-    )
   )
+
+  result <- hospital_stays |>
+    dplyr::arrange(BEN_IDT_ANO, EXE_SOI_DTD, DGN_PAL, DGN_PAL_UM, ASS_DGN) |>
+    dplyr::select(
+      ETA_NUM, RSA_NUM, BEN_IDT_ANO, EXE_SOI_DTD,
+      DGN_PAL, DGN_REL, DGN_PAL_UM, DGN_REL_UM, ASS_DGN
+    )
+
+  expected  <- tibble::tribble(
+    ~ETA_NUM, ~RSA_NUM, ~BEN_IDT_ANO, ~EXE_SOI_DTD,
+    ~DGN_PAL, ~DGN_REL, ~DGN_PAL_UM, ~DGN_REL_UM, ~ASS_DGN,
+    1, 1, 1, "2019-01-10",   "A00", "A01", "A00", "Z00", NA,
+    1, 1, 1, "2019-01-10",   "A00", "A01", "A01", "Z01", NA,
+    1, 1, 1, "2019-01-10",   "A00", "A01", NA,    NA,    "E00",
+    2, 2, 2, "2019-01-02",   "B00", "B01", "B00", "B01", NA,
+    2, 2, 2, "2019-01-02",   "B00", "B01", NA,    NA,    "E00"
+  ) |>
+    dplyr::mutate(EXE_SOI_DTD = as.Date(EXE_SOI_DTD))
+
+  expect_equal(result, expected)
 })
+
 
 test_that("extract_stays_mcob works without any filters", {
   conn <- connect_synthetic_snds()
   on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
 
   create_mock_hospital_stays(conn)
-  patients_ids_filter <- patients_ids_filter <- data.frame(
+
+  fake_patients_ids <- data.frame(
     BEN_IDT_ANO = c(1),
     BEN_NIR_PSA = c("12345")
   )
@@ -130,46 +115,27 @@ test_that("extract_stays_mcob works without any filters", {
     start_date = as.Date("2019-01-01"),
     end_date = as.Date("2019-12-31"),
     dp_cim10_codes_filter = NULL,
-    patients_ids_filter = patients_ids_filter,
+    patients_ids_filter = fake_patients_ids,
     conn = conn
-  ) |>
-    dplyr::arrange(BEN_IDT_ANO, EXE_SOI_DTD, DGN_PAL, DGN_PAL_UM, ASS_DGN)
-
-  expect_equal(
-    hospital_stays |>
-      dplyr::select(
-        ETA_NUM,
-        RSA_NUM,
-        BEN_IDT_ANO,
-        EXE_SOI_DTD,
-        DGN_PAL,
-        DGN_REL,
-        DGN_PAL_UM,
-        DGN_REL_UM,
-        ASS_DGN
-      ),
-    structure(
-      list(
-        ETA_NUM = c(1, 1, 1),
-        RSA_NUM = c(1, 1, 1),
-        BEN_IDT_ANO = c(1, 1, 1),
-        EXE_SOI_DTD = as.Date(
-          c(
-            "2019-01-10",
-            "2019-01-10",
-            "2019-01-10"
-          )
-        ),
-        DGN_PAL = c("A00", "A00", "A00"),
-        DGN_REL = c("A01", "A01", "A01"),
-        DGN_PAL_UM = c("A00", "A01", NA),
-        DGN_REL_UM = c("Z00", "Z01", NA),
-        ASS_DGN = c(NA, NA, "E00")
-      ),
-      class = c("tbl_df", "tbl", "data.frame"),
-      row.names = c(NA, -3L)
-    )
   )
+
+  result <- hospital_stays |>
+    dplyr::arrange(BEN_IDT_ANO, EXE_SOI_DTD, DGN_PAL, DGN_PAL_UM, ASS_DGN) |>
+    dplyr::select(
+      ETA_NUM, RSA_NUM, BEN_IDT_ANO, EXE_SOI_DTD,
+      DGN_PAL, DGN_REL, DGN_PAL_UM, DGN_REL_UM, ASS_DGN
+    )
+
+  expected <- tibble::tribble(
+    ~ETA_NUM, ~RSA_NUM, ~BEN_IDT_ANO, ~EXE_SOI_DTD,
+    ~DGN_PAL, ~DGN_REL, ~DGN_PAL_UM,  ~DGN_REL_UM,  ~ASS_DGN,
+    1, 1, 1, "2019-01-10",   "A00", "A01", "A00", "Z00", NA,
+    1, 1, 1, "2019-01-10",   "A00", "A01", "A01", "Z01", NA,
+    1, 1, 1, "2019-01-10",   "A00", "A01", NA,    NA,    "E00"
+  ) |>
+    dplyr::mutate(EXE_SOI_DTD = as.Date(EXE_SOI_DTD))
+
+  expect_equal(result, expected)
 })
 
 

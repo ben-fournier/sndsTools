@@ -18,7 +18,7 @@ test_that("connect_synthetic_snds works", {
   on.exit(unlink(PATH2SYNTHETIC_SNDS), add = TRUE)
 
   result_conn <- connect_synthetic_snds(
-    path2db = PATH2SYNTHETIC_SNDS
+    # path2db = PATH2SYNTHETIC_SNDS
   )
   on.exit(DBI::dbDisconnect(result_conn), add = TRUE)
   # Check that it works the first time it is called
@@ -26,7 +26,7 @@ test_that("connect_synthetic_snds works", {
   expect_true(length(tables) > 0)
   # Check that it works the second time it is called
   second_con <- connect_synthetic_snds(
-    path2db = PATH2SYNTHETIC_SNDS
+    # path2db = PATH2SYNTHETIC_SNDS
   )
   on.exit(DBI::dbDisconnect(second_con), add = TRUE)
   # check that tables have been loaded in the database

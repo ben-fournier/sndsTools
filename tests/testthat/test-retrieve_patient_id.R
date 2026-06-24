@@ -1,5 +1,8 @@
 require(dplyr)
 
+conn <- connect_synthetic_snds()
+on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
+
 # Create fake IR_BEN_R data
 fake_ir_ben_r <- data.frame(
   BEN_IDT_ANO = c(1, 2, 3, 1),
@@ -40,15 +43,14 @@ fake_psa_input_no_rng <- data.frame(
   BEN_NIR_PSA = c(11, 12)
 )
 
+# Set up test data
+DBI::dbWriteTable(conn, "IR_BEN_R", fake_ir_ben_r, overwrite = TRUE)
+DBI::dbWriteTable(conn, "IR_BEN_R_ARC", fake_ir_ben_r_arc, overwrite = TRUE)
+DBI::dbWriteTable(conn, "TEST_IDT_INPUT", fake_idt_input, overwrite = TRUE)
+DBI::dbWriteTable(conn, "TEST_PSA_INPUT", fake_psa_input, overwrite = TRUE)
+
+
 test_that("retrieve_all_psa_from_idt works", {
-  conn <- connect_synthetic_snds()
-  on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
-
-  # Set up test data
-  DBI::dbWriteTable(conn, "IR_BEN_R", fake_ir_ben_r, overwrite = TRUE)
-  DBI::dbWriteTable(conn, "IR_BEN_R_ARC", fake_ir_ben_r_arc, overwrite = TRUE)
-  DBI::dbWriteTable(conn, "TEST_IDT_INPUT", fake_idt_input, overwrite = TRUE)
-
   # Test the function
   result <- retrieve_all_psa_from_idt(
     ben_table_name = "TEST_IDT_INPUT",
@@ -68,14 +70,6 @@ test_that("retrieve_all_psa_from_idt works", {
 })
 
 test_that("retrieve_all_psa_from_psa works", {
-  conn <- connect_synthetic_snds()
-  on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
-
-  # Set up test data
-  DBI::dbWriteTable(conn, "IR_BEN_R", fake_ir_ben_r, overwrite = TRUE)
-  DBI::dbWriteTable(conn, "IR_BEN_R_ARC", fake_ir_ben_r_arc, overwrite = TRUE)
-  DBI::dbWriteTable(conn, "TEST_PSA_INPUT", fake_psa_input, overwrite = TRUE)
-
   # Test the function
   result <- retrieve_all_psa_from_psa(
     ben_table_name = "TEST_PSA_INPUT",

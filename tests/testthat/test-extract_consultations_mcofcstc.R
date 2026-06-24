@@ -1,10 +1,7 @@
 require(dplyr)
 require(tibble)
 
-conn <- connect_duckdb(PATH2TEST_DB)
-on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
-
-patients_ids_filter <- tibble::tribble(
+fake_patients_ids <- tibble::tribble(
   ~BEN_IDT_ANO, ~BEN_NIR_PSA,
              1,           11,
              2,           12,
@@ -43,12 +40,29 @@ fake_fmstc_table <- tibble::tribble(
         20,       33,  "ACQK002"
 )
 
-DBI::dbWriteTable(conn, "T_MCO19CSTC", fake_cstc_table, overwrite = TRUE)
-DBI::dbWriteTable(conn, "T_MCO19FCSTC", fake_fcstc_table, overwrite = TRUE)
-DBI::dbWriteTable(conn, "T_MCO19FMSTC", fake_fmstc_table, overwrite = TRUE)
+create_mock_erprsf <- function(
+    conn,
+    fake_cstc,
+    fake_fcstc,
+    fake_fmstc
+) {
+  DBI::dbWriteTable(conn, "T_MCO19CSTC", fake_cstc, overwrite = TRUE)
+  DBI::dbWriteTable(conn, "T_MCO19FCSTC", fake_fcstc, overwrite = TRUE)
+  DBI::dbWriteTable(conn, "T_MCO19FMSTC", fake_fmstc, overwrite = TRUE)
+}
 
 
 test_that("extract_consultations_mcofcstc works", {
+  conn <- connect_synthetic_snds()
+  on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
+
+  create_mock_erprsf(
+    conn = conn,
+    fake_cstc  = fake_cstc_table,
+    fake_fcstc = fake_fcstc_table,
+    fake_fmstc = fake_fmstc_table
+  )
+
   start_date <- as.Date("2019-01-01")
   end_date <- as.Date("2019-12-31")
   spe_codes_filter <- c("01", "22", "32", "34")
@@ -57,7 +71,7 @@ test_that("extract_consultations_mcofcstc works", {
     start_date = start_date,
     end_date = end_date,
     spe_codes_filter = spe_codes_filter,
-    patient_ids_filter = patients_ids_filter,
+    patient_ids_filter = fake_patients_ids,
     conn = conn
   )
 
@@ -77,6 +91,16 @@ test_that("extract_consultations_mcofcstc works", {
 })
 
 test_that("extract_consultations_mcofcstc works with multiple filters", {
+  conn <- connect_synthetic_snds()
+  on.exit(DBI::dbDisconnect(conn, shutdown = TRUE), add = TRUE)
+
+  create_mock_erprsf(
+    conn = conn,
+    fake_cstc  = fake_cstc_table,
+    fake_fcstc = fake_fcstc_table,
+    fake_fmstc = fake_fmstc_table
+  )
+
   start_date <- as.Date("2019-01-01")
   end_date <- as.Date("2019-12-31")
   spe_codes_filter <- c("01", "22")
@@ -89,7 +113,7 @@ test_that("extract_consultations_mcofcstc works with multiple filters", {
     spe_codes_filter = spe_codes_filter,
     prestation_codes_filter = prestation_codes_filter,
     ccam_codes_filter = ccam_codes_filter,
-    patient_ids_filter = patients_ids_filter,
+    patient_ids_filter = fake_patients_ids,
     conn = conn
   )
 
